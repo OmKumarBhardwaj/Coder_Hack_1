@@ -1,2 +1,4 @@
-package org.coder.coderhack.service;public interface UserService {
+package org.coder.coderhack.service;
+
+public interface UserService {
 }

@@ -1,2 +1,10 @@
-package org.coder.coderhack.dto;public class UserScoreUpdateDto {
+package org.coder.coderhack.dto;
+
+
+import lombok.Data;
+
+@Data
+public class UserScoreUpdateDto {
+    private String userUd;
+    private Integer score;
 }
