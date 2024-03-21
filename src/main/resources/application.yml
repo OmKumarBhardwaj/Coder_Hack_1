@@ -3,5 +3,9 @@ spring:
     name: CoderHack
   data:
     mongodb:
-      uri: mongodb://username:password@localhost:27017/coder_hack
+      database: coder_hack
+      username: username
+      password: password
+      host: localhost
+      port: 27018
 
