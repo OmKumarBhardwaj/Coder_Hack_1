@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -43,9 +44,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean updateUserScore(UserScoreUpdateDto userScoreUpdateDto) {
-        User user = userRepository.findById(userScoreUpdateDto.getUserId())
-                .orElseThrow(() -> new UserNotFoundException("User not found with given user id: " + userScoreUpdateDto.getUserId()));
+    public boolean updateUserScore(String userId, UserScoreUpdateDto userScoreUpdateDto) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found with given user id: " + userId));
 
         if (user.getBadges().size() > 3) {
             throw new MaximumBatchesAchieved("User already achieved maximum badges");
@@ -71,5 +72,21 @@ public class UserServiceImpl implements UserService {
         } else if (score > 60 && score <= 100) {
             user.getBadges().addAll(Arrays.asList(Badge.CODE_NINJA, Badge.CODE_CHAMP, Badge.CODE_MASTER));
         }
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        List<User> userList = userRepository.findAll();
+        if (userList.isEmpty()) {
+            throw new UserNotFoundException("No users found");
+        }
+        userList.sort((user1, user2) -> user2.getScore().compareTo(user1.getScore()));
+        return userList;
+    }
+
+    @Override
+    public User getUserById(String userId) {
+        return userRepository.findById((userId))
+                .orElseThrow(() -> new UserNotFoundException("User not found with given user id:" + userId));
     }
 }

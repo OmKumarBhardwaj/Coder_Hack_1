@@ -16,6 +16,6 @@ public class User {
     @Id
     private String userId;
     private String userName;
-    private int score;
+    private Integer score;
     private Set<Badge> badges;
 }
