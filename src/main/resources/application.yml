@@ -4,8 +4,5 @@ spring:
   data:
     mongodb:
       database: coder_hack
-      username: username
-      password: password
       host: localhost
-      port: 27018
-
+      port: 27017
