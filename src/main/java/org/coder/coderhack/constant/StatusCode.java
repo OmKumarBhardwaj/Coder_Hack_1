@@ -10,6 +10,7 @@ public final class StatusCode {
     public static final String STATUS_500 = "500";
     public static final String MESSAGE_500 = "Internal Server Error";
     public static final String STATUS_417 = "417";
-    public static final String MESSAGE_417 = "User Not Found, Update cannot be performed";
+    public static final String MESSAGE_417_Update = "Update does not go as planned";
+    public static final String MESSAGE_417_DELETE = "Delete does not go as planned";
 
 }

@@ -1,13 +1,19 @@
 package org.coder.coderhack.service.impl;
 
 import lombok.AllArgsConstructor;
+import org.coder.coderhack.constant.Badge;
 import org.coder.coderhack.dto.UserRegistrationDto;
+import org.coder.coderhack.dto.UserScoreUpdateDto;
 import org.coder.coderhack.entity.User;
+import org.coder.coderhack.exception.MaximumBatchesAchieved;
 import org.coder.coderhack.exception.UserAlreadyExistsException;
+import org.coder.coderhack.exception.UserNotFoundException;
+import org.coder.coderhack.exception.UserScoreAlreadyModifiedOnce;
 import org.coder.coderhack.repository.UserRepository;
 import org.coder.coderhack.service.UserService;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Optional;
 
@@ -36,6 +42,34 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
+    @Override
+    public boolean updateUserScore(UserScoreUpdateDto userScoreUpdateDto) {
+        User user = userRepository.findById(userScoreUpdateDto.getUserId())
+                .orElseThrow(() -> new UserNotFoundException("User not found with given user id: " + userScoreUpdateDto.getUserId()));
 
+        if (user.getBadges().size() > 3) {
+            throw new MaximumBatchesAchieved("User already achieved maximum badges");
+        }
 
+        if (user.getScore() > 0) {
+            throw new UserScoreAlreadyModifiedOnce("User score already modified once");
+        }
+
+        addBadgesBasedOnScore(user, userScoreUpdateDto.getScore());
+        user.setScore(userScoreUpdateDto.getScore());
+
+        userRepository.save(user);
+
+        return true;
+    }
+
+    private void addBadgesBasedOnScore(User user, int score) {
+        if (score >= 1 && score <= 30) {
+            user.getBadges().add(Badge.CODE_NINJA);
+        } else if (score > 30 && score <= 60) {
+            user.getBadges().addAll(Arrays.asList(Badge.CODE_NINJA, Badge.CODE_CHAMP));
+        } else if (score > 60 && score <= 100) {
+            user.getBadges().addAll(Arrays.asList(Badge.CODE_NINJA, Badge.CODE_CHAMP, Badge.CODE_MASTER));
+        }
+    }
 }

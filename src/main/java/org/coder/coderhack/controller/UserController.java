@@ -1,28 +1,48 @@
 package org.coder.coderhack.controller;
 
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.coder.coderhack.constant.StatusCode;
 import org.coder.coderhack.dto.ResponseDto;
 import org.coder.coderhack.dto.UserRegistrationDto;
+import org.coder.coderhack.dto.UserScoreUpdateDto;
 import org.coder.coderhack.service.UserService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
 @AllArgsConstructor
+@Validated
 public class UserController {
     private UserService userservice;
 
     @PostMapping("/register")
-    public ResponseEntity<ResponseDto> registerUser(@RequestBody UserRegistrationDto user) {
+    public ResponseEntity<ResponseDto> registerUser(@Valid @RequestBody UserRegistrationDto user) {
         userservice.registerUser(user);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(new ResponseDto(StatusCode.STATUS_201, StatusCode.STATUS_201));
+    }
+
+    public ResponseEntity<ResponseDto> updateUserScore(@Valid @RequestBody UserScoreUpdateDto userScoreUpdateDto) {
+        boolean isUpdated = userservice.updateUserScore(userScoreUpdateDto);
+        if (isUpdated) {
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(new ResponseDto(StatusCode.STATUS_200, StatusCode.STATUS_200));
+        } else {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(new ResponseDto(StatusCode.STATUS_417, StatusCode.MESSAGE_417_Update));
+        }
     }
 
 }
