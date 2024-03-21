@@ -38,4 +38,12 @@ public interface UserService {
      * @return
      */
     User getUserById(String userId);
+
+    /**
+     * Delete user by id
+     *
+     * @param userId
+     * @return
+     */
+    boolean deleteUserById(String userId);
 }

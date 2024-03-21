@@ -89,4 +89,13 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById((userId))
                 .orElseThrow(() -> new UserNotFoundException("User not found with given user id:" + userId));
     }
+
+    @Override
+    public boolean deleteUserById(String userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found with given user id: " + userId));
+
+        userRepository.deleteById(user.getUserId());
+        return true;
+    }
 }

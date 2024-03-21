@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/users",produces = {MediaType.APPLICATION_JSON_VALUE})
+@RequestMapping(path = "/users", produces = {MediaType.APPLICATION_JSON_VALUE})
 @AllArgsConstructor
 @Validated
 public class UserController {
@@ -33,8 +33,8 @@ public class UserController {
     }
 
     @PutMapping("/{userId}")
-    public ResponseEntity<ResponseDto> updateUserScore(@PathVariable String userId,@Valid @RequestBody UserScoreUpdateDto userScoreUpdateDto) {
-        boolean isUpdated = userservice.updateUserScore(userId,userScoreUpdateDto);
+    public ResponseEntity<ResponseDto> updateUserScore(@PathVariable String userId, @Valid @RequestBody UserScoreUpdateDto userScoreUpdateDto) {
+        boolean isUpdated = userservice.updateUserScore(userId, userScoreUpdateDto);
         if (isUpdated) {
             return ResponseEntity
                     .status(HttpStatus.OK)
@@ -63,15 +63,18 @@ public class UserController {
                 .body(user);
     }
 
-
-
-
-    /*
-     GET /users - Retrieve a list of all registered users sorted by score in descending order [Done]
-     GET /users/{userId} - Retrieve the details of a specific user [Done]
-     POST /users - Register a new user to the contest [Done]
-     PUT /users/{userId} - Update the score of a specific user [Done]
-     DELETE /users/{userId} - Deregister a specific user from the contest [
-    */
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<ResponseDto> deregisterUser(@PathVariable String userId) {
+        boolean isDeleted = userservice.deleteUserById(userId);
+        if (isDeleted) {
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(new ResponseDto(StatusCode.STATUS_200, StatusCode.STATUS_200));
+        } else {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(new ResponseDto(StatusCode.STATUS_417, StatusCode.MESSAGE_417_DELETE));
+        }
+    }
 
 }
